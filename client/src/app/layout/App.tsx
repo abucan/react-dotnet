@@ -1,14 +1,37 @@
-import { useState } from "react";
-import { Product } from "../models/product";
 import Catalog from "../../features/catalog/Catalog";
+import {
+  Container,
+  CssBaseline,
+  createTheme,
+  ThemeProvider,
+} from "@mui/material";
+import Header from "./Header";
+import { useState } from "react";
 
 function App() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [darkMode, setDarkMode] = useState(false);
+  const paletteType = darkMode ? "dark" : "light";
+  const theme = createTheme({
+    palette: {
+      mode: paletteType,
+      background: {
+        default: paletteType === "light" ? "#eaeaea" : "#121212",
+      },
+    },
+  });
+
+  function handleThemeChange() {
+    setDarkMode(!darkMode);
+  }
+
   return (
-    <>
-      <Catalog />
-      <h2>Client</h2>
-    </>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Header darkMode={darkMode} setDarkMode={handleThemeChange} />
+      <Container>
+        <Catalog />
+      </Container>
+    </ThemeProvider>
   );
 }
 
