@@ -43,7 +43,7 @@ namespace API.Controllers
             var result = await _context.SaveChangesAsync();
 
             if (result == 0) return BadRequest(new ProblemDetails { Title = "Problem adding item to basket" });
-            return CreatedAtRoute("GetBasket",  MapBasketToDto(basket));
+            return CreatedAtRoute("GetBasket", MapBasketToDto(basket));
         }
 
         [HttpDelete]
@@ -54,7 +54,7 @@ namespace API.Controllers
             if (basket == null) return NotFound();
 
             var product = await _context.Products.FindAsync(productId);
-            if (product == null) return NotFound();
+            if (product == null) return BadRequest(new ProblemDetails { Title = "Product Not Found" });
 
             basket.RemoveItem(productId, quantity);
 
