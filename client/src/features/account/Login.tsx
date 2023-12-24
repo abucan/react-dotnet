@@ -8,12 +8,16 @@ import {
   TextField,
   Grid,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
-import agent from '../../app/api/agent';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FieldValues, useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
+import { signInUser } from './accountSlice';
+import { useAppDispatch } from '../../app/store/configureStore';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
@@ -24,7 +28,8 @@ export default function Login() {
 
   async function submitForm(data: FieldValues) {
     try {
-      await agent.Account.login(data);
+      await dispatch(signInUser(data));
+      navigate(location.state?.from || '/catalog');
     } catch (error) {
       console.log(error);
     }
@@ -87,7 +92,9 @@ export default function Login() {
         </LoadingButton>
         <Grid container>
           <Grid item>
-            <Link to='/register'>{"Don't have an account? Sign Up"}</Link>
+            <Link to='/register'>
+              {"Don't have an account? Sign Up"}
+            </Link>
           </Grid>
         </Grid>
       </Box>

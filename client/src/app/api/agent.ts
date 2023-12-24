@@ -1,14 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { router } from '../router/Routes';
 import { PaginatedResponse } from '../models/pagination';
+import { store } from '../store/configureStore';
 
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
+const sleep = () =>
+  new Promise((resolve) => setTimeout(resolve, 500));
 
 axios.defaults.baseURL = 'http://localhost:5000/api/';
 axios.defaults.withCredentials = true;
 
 const responseBody = (response: AxiosResponse) => response.data;
+
+axios.interceptors.request.use((config) => {
+  const token = store.getState().account.user?.token;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+
+  return config;
+});
 
 axios.interceptors.response.use(
   async (response) => {
@@ -17,7 +27,7 @@ axios.interceptors.response.use(
     if (pagination) {
       response.data = new PaginatedResponse(
         response.data,
-        JSON.parse(pagination)
+        JSON.parse(pagination),
       );
     }
     return response;
@@ -45,14 +55,16 @@ axios.interceptors.response.use(
         break;
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 const requests = {
   get: (url: string, params?: URLSearchParams) =>
     axios.get(url, { params }).then(responseBody),
-  post: (url: string, body: object) => axios.post(url, body).then(responseBody),
-  put: (url: string, body: object) => axios.put(url, body).then(responseBody),
+  post: (url: string, body: object) =>
+    axios.post(url, body).then(responseBody),
+  put: (url: string, body: object) =>
+    axios.put(url, body).then(responseBody),
   delete: (url: string) => axios.delete(url).then(responseBody),
 };
 
@@ -73,9 +85,14 @@ const TestErrors = {
 const Basket = {
   get: () => requests.get('basket'),
   addItem: (productId: number, quantity: number = 1) =>
-    requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
+    requests.post(
+      `basket?productId=${productId}&quantity=${quantity}`,
+      {},
+    ),
   deleteItem: (productId: number, quantity: number) =>
-    requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
+    requests.delete(
+      `basket?productId=${productId}&quantity=${quantity}`,
+    ),
 };
 
 const Account = {
