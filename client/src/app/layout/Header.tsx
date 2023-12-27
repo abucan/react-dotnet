@@ -47,11 +47,11 @@ export default function Header({ darkMode, setDarkMode }: Props) {
   const { user } = useAppSelector((state) => state.account);
   const itemsCount = basket?.items.reduce(
     (sum, item) => sum + item.quantity,
-    0,
+    0
   );
 
   return (
-    <AppBar position='static' sx={{ mb: 4 }}>
+    <AppBar position='static'>
       <Toolbar
         sx={{
           display: 'flex',
@@ -60,24 +60,14 @@ export default function Header({ darkMode, setDarkMode }: Props) {
         }}
       >
         <Box display='flex' alignItems='center'>
-          <Typography
-            variant='h6'
-            component={NavLink}
-            to={'/'}
-            sx={navStyles}
-          >
+          <Typography variant='h6' component={NavLink} to={'/'} sx={navStyles}>
             CLIENT
           </Typography>
           <Switch checked={darkMode} onChange={setDarkMode} />
         </Box>
         <List sx={{ display: 'flex' }}>
           {midLinks.map(({ title, path }) => (
-            <ListItem
-              component={NavLink}
-              to={path}
-              key={path}
-              sx={navStyles}
-            >
+            <ListItem component={NavLink} to={path} key={path} sx={navStyles}>
               {title.toUpperCase()}
             </ListItem>
           ))}
