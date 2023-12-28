@@ -24,7 +24,7 @@ export default function AppPagination({
         color='secondary'
         count={totalPages}
         page={currentPage}
-        onChange={(e, page) => onPageChange(page)}
+        onChange={(_, page) => onPageChange(page)}
         size='large'
       />
     </Box>
