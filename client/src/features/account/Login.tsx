@@ -28,8 +28,10 @@ export default function Login() {
 
   async function submitForm(data: FieldValues) {
     try {
-      await dispatch(signInUser(data));
-      navigate(location.state?.from || '/catalog');
+      const user = await dispatch(signInUser(data));
+      if (!!user) {
+        navigate(location.state?.from || '/catalog');
+      }
     } catch (error) {
       console.log(error);
     }
@@ -92,9 +94,7 @@ export default function Login() {
         </LoadingButton>
         <Grid container>
           <Grid item>
-            <Link to='/register'>
-              {"Don't have an account? Sign Up"}
-            </Link>
+            <Link to='/register'>{"Don't have an account? Sign Up"}</Link>
           </Grid>
         </Grid>
       </Box>
